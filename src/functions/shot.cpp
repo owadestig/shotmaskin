@@ -18,7 +18,7 @@ void serve_shot(int flowTime, unsigned long maxOnDuration)
 }
 
 /// @brief toggles flow
-/// @param maxOnDuration max motor spin if no input. This means something in hardware is fucked
+/// @param maxOnDuration max motor spin time if no input. This means something in hardware is fucked
 /// @param waitState desired state to stop at. LOW = open, HIGH = closed
 void toggle_flow(unsigned long maxOnDuration, int waitState)
 {
@@ -43,8 +43,8 @@ void toggle_flow(unsigned long maxOnDuration, int waitState)
     Serial.println("flow UN-toggled!");
 }
 
-/// @brief 
-/// @param maxOnDuration 
+/// @brief resets maching to closed state.
+/// @param maxOnDuration max motor spin time if no input. This means something in hardware is fucked
 void reset_machine(unsigned long maxOnDuration)
 {
     digitalWrite(ledPin, HIGH);
@@ -60,10 +60,11 @@ void reset_machine(unsigned long maxOnDuration)
     if (digitalRead(inputPin) == LOW)
     {
         toggle_flow(maxOnDuration, HIGH);
-        if (digitalRead(inputPin) == HIGH)
-        {
-            toggle_flow(maxOnDuration, LOW);
-        }
+    
+    if (digitalRead(inputPin) == HIGH)
+    {
+        toggle_flow(maxOnDuration, LOW);
+    }
     }
     serve_shot(1, maxOnDuration); //Tvek om vi vill köra detta här?
 }

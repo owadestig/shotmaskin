@@ -5,16 +5,25 @@
 extern const int ledPin;
 extern const int inputPin;
 
+
+/// @brief serves shot
+/// @param flowTime shot flow time in ms
+/// @param maxOnDuration max motor spin time if no input. This means something in hardware is fucked
 void serve_shot(int flowTime, unsigned long maxOnDuration)
 {
     Serial.println("shot time!");
-    digitalWrite(auxPin, HIGH); // verfur?
+    digitalWrite(auxPin, HIGH); // turns on aux output two seconds before motor (nothing to do with motor)
     delay(2000);
     toggle_flow(maxOnDuration, LOW);
     delay(flowTime);
     toggle_flow(maxOnDuration, HIGH);
     delay(2000);
     digitalWrite(auxPin, LOW);
+}
+/// @brief turns on aux output
+/// @param onOrOff choose if on or off
+void toggle_aux(bool onOrOff) {
+    digitalWrite(auxPin, onOrOff);
 }
 
 /// @brief toggles flow
@@ -66,5 +75,5 @@ void reset_machine(unsigned long maxOnDuration)
         toggle_flow(maxOnDuration, LOW);
     }
     }
-    serve_shot(1, maxOnDuration); //Tvek om vi vill köra detta här?
+    serve_shot(1, maxOnDuration); // Verfur?
 }

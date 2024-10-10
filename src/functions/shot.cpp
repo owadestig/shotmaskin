@@ -2,7 +2,7 @@
 #include "shot.h"
 #include "variables.h"
 
-extern const int ledPin;
+extern const int motorPin;
 extern const int inputPin;
 
 
@@ -32,7 +32,7 @@ void toggle_aux(bool onOrOff) {
 void toggle_flow(unsigned long maxOnDuration, int waitState)
 {
     // Turn on the LED
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(motorPin, HIGH);
     Serial.println("flow toggled!");
     unsigned long startTime = millis();
     while (millis() - startTime < maxOnDuration)
@@ -47,8 +47,8 @@ void toggle_flow(unsigned long maxOnDuration, int waitState)
         delay(10); // Small delay to prevent high CPU usage
 
     }
-    // Turn off the LED
-    digitalWrite(ledPin, LOW);
+    // Turn off the motor
+    digitalWrite(motorPin, LOW);
     Serial.println("flow UN-toggled!");
 }
 
@@ -56,9 +56,9 @@ void toggle_flow(unsigned long maxOnDuration, int waitState)
 /// @param maxOnDuration max motor spin time if no input. This means something in hardware is fucked
 void reset_machine(unsigned long maxOnDuration)
 {
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(motorPin, HIGH);
     delay(5000);
-    digitalWrite(ledPin, LOW);
+    digitalWrite(motorPin, LOW);
 
     //Gör den hör funktionen ens något? Den kör ju på input high och snurrar motorn tills input blir high, vilket borde vara direkt.
     if (digitalRead(inputPin) == HIGH)
@@ -75,5 +75,5 @@ void reset_machine(unsigned long maxOnDuration)
         toggle_flow(maxOnDuration, LOW);
     }
     }
-    serve_shot(1, maxOnDuration); // Verfur?
+    serve_shot(1, maxOnDuration);
 }

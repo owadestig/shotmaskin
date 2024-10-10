@@ -65,5 +65,5 @@ void reset_machine(unsigned long maxOnDuration)
             toggle_flow(maxOnDuration, LOW);
         }
     }
-    serve_shot(1, maxOnDuration);
+    serve_shot(1, maxOnDuration); //Tvek om vi vill köra detta här?
 }

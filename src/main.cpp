@@ -13,14 +13,19 @@ void setup()
   Serial.begin(115200);
   delay(10);
 
-  pinMode(pinLED, OUTPUT);
-  pinMode(pinInput, INPUT_PULLUP);
+  pinMode(motorPin, OUTPUT);
+  pinMode(auxPin, OUTPUT);
+  pinMode(inputPin, INPUT_PULLUP);
+
+  digitalWrite(motorPin, LOW);
+  digitalWrite(auxPin, LOW);
 
   WiFi.softAP(ssid, password);
 
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(myIP);
+  Serial.print("\n");
 
   server.on("/", []() { handleRoot(server); });
   server.on("/", []() { handleToggle(server); });

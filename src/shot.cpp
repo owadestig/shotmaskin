@@ -1,24 +1,20 @@
-#include "Utils.h"
+#include <Arduino.h>
+extern const int pinLED;
+extern const int pinInput;
+int relayPin = 12; // D2
 
-const int pinLED = 5;
-const int pinInput = 14;
-
-void toggle_flow(int maxOnDuration, int waitState)
+void toggle_flow(unsigned long maxOnDuration, int waitState)
 {
     // Turn on the LED
     digitalWrite(pinLED, HIGH);
+    Serial.println("flow toggled!");
     unsigned long startTime = millis();
-    bool ButtonSignal = false;
-
     while (millis() - startTime < maxOnDuration)
     {
-        // Read the button state directly without debouncing
-        int buttonState = digitalRead(pinInput);
 
         // Check if the button state matches the wait state
-        if (buttonState == waitState)
+        if (digitalRead(pinInput) == waitState)
         {
-            ButtonSignal = true;
             break;
         }
 
@@ -26,15 +22,37 @@ void toggle_flow(int maxOnDuration, int waitState)
     }
     // Turn off the LED
     digitalWrite(pinLED, LOW);
+    Serial.println("flow UN-toggled!");
 }
-void serve_shot(int watering_time, int maxOnDuration)
+void serve_shot(int flowTime, unsigned long maxOnDuration)
 {
+    Serial.println("shot time!");
+    digitalWrite(relayPin, HIGH);
+    delay(2000);
     toggle_flow(maxOnDuration, LOW);
-    delay(watering_time);
+    delay(flowTime);
     toggle_flow(maxOnDuration, HIGH);
+    delay(2000);
+    digitalWrite(relayPin, LOW);
 }
 
-void resetLED(int maxOnDuration)
+void reset_machine(unsigned long maxOnDuration)
 {
+    digitalWrite(pinLED, HIGH);
+    delay(5000);
+    digitalWrite(pinLED, LOW);
+    if (digitalRead(pinInput) == HIGH)
+    {
+        toggle_flow(maxOnDuration, HIGH);
+    }
+
+    if (digitalRead(pinInput) == LOW)
+    {
+        toggle_flow(maxOnDuration, HIGH);
+        if (digitalRead(pinInput) == HIGH)
+        {
+            toggle_flow(maxOnDuration, LOW);
+        }
+    }
     serve_shot(1, maxOnDuration);
 }

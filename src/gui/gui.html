@@ -1,0 +1,130 @@
+<!--Needs to be copied into gui.cpp-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP8266 LED Control</title>
+    <style>
+        @keyframes colorChange {
+            0% {
+                background-color: #39ff14;
+            }
+
+            /* Neon Green */
+            20% {
+                background-color: #ff073a;
+            }
+
+            /* Neon Red */
+            40% {
+                background-color: #f7f000;
+            }
+
+            /* Neon Yellow */
+            60% {
+                background-color: #1f51ff;
+            }
+
+            /* Neon Blue */
+            80% {
+                background-color: #ff007f;
+            }
+
+            /* Neon Pink */
+            100% {
+                background-color: #39ff14;
+            }
+
+            /* Back to Neon Green */
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            animation: colorChange 6s linear infinite;
+            /* Smooth color transition */
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0.8;
+            /* Slightly opaque */
+            animation: pulse 0.5s ease-in-out infinite;
+            /* Beating effect at 120 BPM */
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Shot Machine</h1>
+        <input type="number" id="flowTime" placeholder="Enter flow time (ms)" min="0">
+        <button onclick="serve_shot()">Serve Shot</button>
+    </div>
+
+    <script>
+        let isToggling = false;  // Flag to prevent multiple requests
+
+        function serve_shot() {
+            if (isToggling) return;  // Prevent multiple requests
+            isToggling = true;
+            const flowTime = document.getElementById('flowTime').value;
+            fetch(`/toggle?flowTime=${flowTime}`)
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text);
+                    isToggling = false;  // Allow further requests
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    isToggling = false;  // Allow further requests even if there's an error
+                });
+        }
+    </script>
+</body>
+
+</html>
